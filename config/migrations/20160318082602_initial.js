@@ -10,8 +10,7 @@ module.exports = {
     db.schema()
       .createTable('z_migrations', {
         created: {
-          type: 'string',
-          length: 20
+          type: 'timestamp',
         },
         id: {
           type: 'string',
@@ -19,8 +18,10 @@ module.exports = {
         }
       });
 
-    return db.schema()
+    db.schema()
       .createTable('raw_log', schema);
+
+    return new Promise.resolve(true);
   },
 
   down: function(db) {
