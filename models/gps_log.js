@@ -5,6 +5,10 @@ module.exports.schema = {
       type: 'increments',
       primary: true
     },
+    device_id: {
+      type: 'string',
+      length: 15
+    },
     latitude: {
       type: 'string',
       length: 15

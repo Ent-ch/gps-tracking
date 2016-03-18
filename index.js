@@ -1,7 +1,7 @@
 var gps = require("gps-tracking");
 var db = require('./config/db');
 var RawData = require('./models/raw_log').collection,
-    GpsData = require('./models/gps_log').collection;
+  GpsData = require('./models/gps_log').collection;
 
 var options = {
     'debug': false, //We don't want to debug info automatically. We are going to log everything manually so you can check what happens everywhere
@@ -9,6 +9,7 @@ var options = {
     'device_adapter': "TK103"
   },
   CData = new RawData();
+GData = new GpsData();
 
 var server = gps.server(options, function(device, connection) {
 
@@ -25,8 +26,20 @@ var server = gps.server(options, function(device, connection) {
   });
 
   device.on("ping", function(data) {
+    var devId = this.getUID(),
+      gdata = GData.model({
+        device_id: devId,
+        latitude: data.latitude,
+        longitude: data.longitude,
+        timestamp: Math.floor(Date.now() / 1000)
+      });
+
+    gdata.save()
+      .catch(function(error) {
+        console.log('Could not validated:', error);
+      });
     //this = device
-    console.log("I'm here: " + data.latitude + ", " + data.longitude + " (" + this.getUID() + ")");
+    // console.log("I'm here: " + data.latitude + ", " + data.longitude + " (" + this.getUID() + ")");
     //Look what informations the device sends to you (maybe velocity, gas level, etc)
     //console.log(data);
     return data;
@@ -47,10 +60,10 @@ var server = gps.server(options, function(device, connection) {
     sdata.save()
       .then(function(model) {
         // var id = model.get('id');
-        console.log('Created new post with ID:', model);
+        // console.log('Created new post with ID:', model);
       })
       .catch(function(error) {
         console.log('Could not validated:', error);
       });
-  })
+  });
 });
