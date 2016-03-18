@@ -14,7 +14,7 @@
   ],
   "author": "Ent-ch",
   "license": "MIT",
-  "homepage": "https://github.com/freshworkstudio/gps-tracking-demo",
+  "homepage": "https://github.com/Ent-ch/gps-tracking",
   "dependencies": {
     "express": "^4.13.4",
     "firenze": "^0.6.0",
