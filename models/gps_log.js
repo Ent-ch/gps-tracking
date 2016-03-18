@@ -1,0 +1,27 @@
+var db = require('../config/db');
+
+var schema = {
+    id: {
+      type: 'increments',
+      primary: true
+    },
+    latitude: {
+      type: 'string',
+      length: 15
+    },
+    longitude: {
+      type: 'string',
+      length: 15
+    },
+    timestamp: {
+      type: 'timestamp',
+    }
+};
+
+module.exports.schema = schema;
+
+module.exports.collection = db.createCollection({
+  table: 'gps_log',
+  alias: 'GpsLog',
+  schema: schema
+});

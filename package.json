@@ -1,0 +1,21 @@
+{
+  "name": "gps-tracking-demo2",
+  "version": "1.0.0",
+  "description": "Demo App for gps-tracing node.js package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gps-tracking",
+    "demo"
+  ],
+  "author": "Ent-ch",
+  "license": "MIT",
+  "homepage": "https://github.com/freshworkstudio/gps-tracking-demo",
+  "dependencies": {
+    "firenze": "^0.6.0",
+    "firenze-adapter-sqlite3": "^0.4.0",
+    "gps-tracking": "^1.0.2"
+  }
+}
