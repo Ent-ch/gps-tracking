@@ -2,14 +2,41 @@ var gps = require("gps-tracking");
 var db = require('./config/db');
 var RawData = require('./models/raw_log').collection,
   GpsData = require('./models/gps_log').collection;
+var express = require('express');
+var webApp = express();
 
 var options = {
     'debug': false, //We don't want to debug info automatically. We are going to log everything manually so you can check what happens everywhere
     'port': 8090,
     'device_adapter': "TK103"
   },
-  CData = new RawData();
-GData = new GpsData();
+  CData = new RawData(),
+  GData = new GpsData();
+
+webApp.get('/', function(req, res) {
+  res.send('hello user');
+});
+
+webApp.get('/raw-data', function(req, res) {
+  CData.find()
+    .orderBy('id', 'desc')
+    .all()
+    .then(function(models) {
+      res.json(models);
+    });
+});
+
+webApp.get('/gps-data', function(req, res) {
+  GData.find()
+    .orderBy('id', 'desc')
+    .all()
+    .then(function(models) {
+      res.json(models);
+    });
+});
+
+webApp.listen(4000);
+
 
 var server = gps.server(options, function(device, connection) {
 
@@ -66,4 +93,5 @@ var server = gps.server(options, function(device, connection) {
         console.log('Could not validated:', error);
       });
   });
+
 });
