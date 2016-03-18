@@ -1,6 +1,6 @@
 var db = require('../config/db');
 
-var schema = {
+module.exports.schema = {
     id: {
       type: 'increments',
       primary: true
@@ -18,10 +18,8 @@ var schema = {
     }
 };
 
-module.exports.schema = schema;
-
 module.exports.collection = db.createCollection({
   table: 'gps_log',
   alias: 'GpsLog',
-  schema: schema
+  schema: module.exports.schema
 });

@@ -1,5 +1,6 @@
 var Promise = require('firenze').Promise;
-var schema = require('../../models/raw_log').schema;
+var schemaRaw = require('../../models/raw_log').schema,
+  schemaGps = require('../../models/gps_log').schema;
 
 module.exports = {
   before: function(db, direction) {
@@ -18,8 +19,8 @@ module.exports = {
         }
       });
 
-    db.schema()
-      .createTable('raw_log', schema);
+    db.schema().createTable('raw_log', schemaRaw);
+    db.schema().createTable('gps_log', schemaGps);
 
     return new Promise.resolve(true);
   },

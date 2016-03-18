@@ -1,6 +1,7 @@
 var gps = require("gps-tracking");
 var db = require('./config/db');
-var RawData = require('./models/raw_log').collection;
+var RawData = require('./models/raw_log').collection,
+    GpsData = require('./models/gps_log').collection;
 
 var options = {
     'debug': false, //We don't want to debug info automatically. We are going to log everything manually so you can check what happens everywhere
@@ -46,13 +47,10 @@ var server = gps.server(options, function(device, connection) {
     sdata.save()
       .then(function(model) {
         // var id = model.get('id');
-        // console.log('Created new post with ID:', id);
+        console.log('Created new post with ID:', model);
       })
       .catch(function(error) {
         console.log('Could not validated:', error);
       });
-    console.log(textData);
-
-
   })
 });
