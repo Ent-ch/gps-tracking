@@ -2,8 +2,10 @@ var gps = require("gps-tracking");
 var db = require('./config/db');
 var RawData = require('./models/raw_log').collection,
   GpsData = require('./models/gps_log').collection;
-var express = require('express');
-var webApp = express();
+
+var express = require('express'),
+    webApp = express(),
+    path = require('path');
 
 var options = {
     'debug': false, //We don't want to debug info automatically. We are going to log everything manually so you can check what happens everywhere
@@ -13,12 +15,45 @@ var options = {
   CData = new RawData(),
   GData = new GpsData();
 
-webApp.get('/', function(req, res) {
-  res.send('hello user');
+webApp.use(express.static(path.join(__dirname, './public')));
+
+webApp.get('/api/last-position', function(req, res) {
+  GData.find()
+    .orderBy('id', 'desc')
+    .first()
+    .then(function(models) {
+      var data = {cords: [0, 0], ts: 0};
+      if (models) {
+        data.cords[0] = parseFloat(models.get('latitude'));
+        data.cords[1] = parseFloat(models.get('longitude'));
+        data.ts = models.get('timestamp');
+      }
+      res.json(data);
+    });
 });
 
-webApp.get('/raw-data', function(req, res) {
+webApp.get('/api/track', function(req, res) {
+  GData.find()
+    .limit(500)
+    .orderBy('id', 'desc')
+    .all()
+    .then(function(rows) {
+      var data = {cords: [], ts1: 0, ts2: 0};
+      rows.forEach(function (row) {
+        var lt = parseFloat(row.attributes.latitude),
+            ln = parseFloat(row.attributes.longitude);
+
+        console.log(row);
+
+        data.cords.push([lt, ln]);
+      });
+      res.json(data);
+    });
+});
+
+webApp.get('/api/raw-data', function(req, res) {
   CData.find()
+    .limit(10)
     .orderBy('id', 'desc')
     .all()
     .then(function(models) {
@@ -26,9 +61,10 @@ webApp.get('/raw-data', function(req, res) {
     });
 });
 
-webApp.get('/gps-data', function(req, res) {
+webApp.get('/api/gps-data', function(req, res) {
   GData.find()
     .orderBy('id', 'desc')
+    // .limit(10)
     .all()
     .then(function(models) {
       res.json(models);
