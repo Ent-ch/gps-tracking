@@ -34,7 +34,7 @@ webApp.get('/api/last-position', function(req, res) {
 
 webApp.get('/api/track', function(req, res) {
   GData.find()
-    .limit(500)
+    .limit(10000)
     .orderBy('id', 'desc')
     .all()
     .then(function(rows) {
@@ -42,8 +42,6 @@ webApp.get('/api/track', function(req, res) {
       rows.forEach(function (row) {
         var lt = parseFloat(row.attributes.latitude),
             ln = parseFloat(row.attributes.longitude);
-
-        console.log(row);
 
         data.cords.push([lt, ln]);
       });
@@ -53,7 +51,7 @@ webApp.get('/api/track', function(req, res) {
 
 webApp.get('/api/raw-data', function(req, res) {
   CData.find()
-    .limit(10)
+    .limit(5000)
     .orderBy('id', 'desc')
     .all()
     .then(function(models) {
@@ -73,18 +71,37 @@ webApp.get('/api/gps-data', function(req, res) {
 
 webApp.listen(4000);
 
+var net = require('net');
+
+net.createServer(function (socket) {
+  // var remClient = socket.remoteAddress + ":" + socket.remotePort;
+  // console.log(remClient);
+  var d = new Date();
+  console.log("New device connected at ", d);
+
+  socket.on('data', function (data) {
+    console.log(data.toString());
+  });
+  socket.on('end', function () {
+    console.log('client disconected');
+  });
+}).listen(8095);
+
+// Put a friendly message on the terminal of the server.
+console.log("Test server running at port 8095\n");
+
 
 var server = gps.server(options, function(device, connection) {
 
   device.on("connected", function(data) {
-    console.log("I'm a new device connected");
+    var d = new Date();
+    console.log("New device connected at ", d);
     this.login_authorized(true);
     return data;
   });
 
   device.on("login_request", function(device_id, msg_parts) {
-
-    console.log('Hey! I want to start transmiting my position. Please accept me. My name is ' + device_id);
+    console.log('Device auth: ' + device_id);
     this.login_authorized(true);
     console.log("Ok, " + device_id + ", you're accepted!");
   });
