@@ -58,7 +58,7 @@ webApp.get('/api/track', function(req, res) {
 
 webApp.get('/api/raw-data', function(req, res) {
   CData.find()
-    .limit(5000)
+    .limit(100)
     .orderBy('id', 'desc')
     .all()
     .then(function(models) {
@@ -69,7 +69,7 @@ webApp.get('/api/raw-data', function(req, res) {
 webApp.get('/api/gps-data', function(req, res) {
   GData.find()
     .orderBy('id', 'desc')
-    // .limit(10)
+    .limit(500)
     .all()
     .then(function(models) {
       res.json(models);
