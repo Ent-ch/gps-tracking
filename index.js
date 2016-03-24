@@ -33,8 +33,15 @@ webApp.get('/api/last-position', function(req, res) {
 });
 
 webApp.get('/api/track', function(req, res) {
+  var today = new Date(),
+      startDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+
   GData.find()
-    .limit(10000)
+    .where(function (expr) {
+      expr
+        .gt('timestamp', startDay);
+        // .isNotNull('title')
+    })
     .orderBy('id', 'desc')
     .all()
     .then(function(rows) {
