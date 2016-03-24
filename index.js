@@ -34,7 +34,7 @@ webApp.get('/api/last-position', function(req, res) {
 
 webApp.get('/api/track', function(req, res) {
   var today = new Date(),
-      startDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+      startDay = (new Date(today.getFullYear(), today.getMonth(), today.getDate())).getTime() / 1000;
 
   GData.find()
     .where(function (expr) {
