@@ -9,6 +9,14 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 
 
 
+$.get( "/api/stops", function( data ) {
+  console.log(data);
+  data.forEach(function (elem) {
+    var date = new Date(elem[0][2] * 1000);
+    L.marker([elem[0][0], elem[0][1]]).addTo(mymap).bindPopup('Time:' + date + ' Duration:' + elem[1] + ' sec.');
+  });
+});
+
 $.get( "/api/last-position", function( data ) {
   var date = new Date(data.ts * 1000);
   L.marker(data.cords).addTo(mymap).bindPopup('Time:' + date).openPopup();

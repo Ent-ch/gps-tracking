@@ -6,9 +6,65 @@ var express = require('express'),
     CData = new RawData(),
     GData = new GpsData();
 
-webApp.use(express.static(path.join(__dirname, './public')));
+var distance = require('gps-distance');
+
+
+var today = new Date(),
+    startDay = (new Date(today.getFullYear(), today.getMonth(), today.getDate())).getTime() / 1000;
+
+var publFolder = path.join(__dirname, '../', 'public');
+webApp.use(express.static(publFolder));
 
 webApp.listen(4000);
+
+webApp.get('/api/stops', function(req, res) {
+  var lastCords,
+      nowCords,
+      result,
+      stop = [],
+      stops = [],
+      filterStops = [],
+      cords = [];
+
+
+  GData.find()
+    // .limit(400)
+    .where(function (expr) {
+      expr
+        .gt('timestamp', startDay);
+    })
+    .orderBy('id', 'asc')
+    .all()
+    .then(function(rows) {
+      rows.forEach(function (row) {
+
+        nowCords = [parseFloat(row.attributes.latitude), parseFloat(row.attributes.longitude), row.attributes.timestamp, row.attributes.id];
+        lastCords = cords.pop();
+
+        if (lastCords && distance([lastCords, nowCords]) < 0.005) {
+          if (!stop.length) {
+            stop.push(lastCords);
+          }
+          stop.push(nowCords);
+        } else {
+          if (stop.length) {
+            stops.push(stop);
+            stop = [];
+          }
+        }
+        cords.push(nowCords);
+      });
+
+      stops.forEach(function (elem) {
+        var dur = (elem[elem.length - 1][2] - elem[0][2]);
+        if (dur >= 60) {
+          filterStops.push([elem[0], dur]);
+        }
+      });
+
+      res.json(filterStops);
+    });
+});
 
 webApp.get('/api/last-position', function(req, res) {
   GData.find()
@@ -26,9 +82,6 @@ webApp.get('/api/last-position', function(req, res) {
 });
 
 webApp.get('/api/track', function(req, res) {
-  var today = new Date(),
-      startDay = (new Date(today.getFullYear(), today.getMonth(), today.getDate())).getTime() / 1000;
-
   GData.find()
     .where(function (expr) {
       expr
