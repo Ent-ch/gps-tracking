@@ -1,4 +1,4 @@
-var net = require('net');
+import net from 'net';
 
 net.createServer(function (socket) {
   // var remClient = socket.remoteAddress + ":" + socket.remotePort;
@@ -14,5 +14,4 @@ net.createServer(function (socket) {
   });
 }).listen(8095);
 
-// Put a friendly message on the terminal of the server.
 console.log("Test server running at port 8095\n");

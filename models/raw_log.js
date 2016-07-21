@@ -1,6 +1,6 @@
 var db = require('../config/db');
 
-module.exports.schema = {
+let schema = {
     id: {
       type: 'increments',
       primary: true
@@ -11,11 +11,13 @@ module.exports.schema = {
     },
     ts: {
       type: 'timestamp',
-    }
+    },
 };
 
-module.exports.collection = db.createCollection({
+let collection = db.createCollection({
   table: 'raw_log',
   alias: 'RawLog',
-  schema: module.exports.schema
+  schema,
 });
+
+module.exports = {schema, collection};

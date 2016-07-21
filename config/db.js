@@ -1,6 +1,7 @@
 var f = require('firenze');
-var Database = f.Database;
 var SqliteAdapter = require('firenze-adapter-sqlite3');
+
+var Database = f.Database;
 
 var db = new Database({
   adapter: SqliteAdapter,
