@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "./node_modules/.bin/firenze migration run 20160318082602_initial.js  --db ./config/db.js",
+    "postinstall": "./node_modules/.bin/firenze migration runAll  --db ./config/db.js",
     "start": "node index.js"
   },
   "keywords": [
