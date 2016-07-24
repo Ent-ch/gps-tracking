@@ -30,7 +30,7 @@ webApp.get('/api/stops', (req, res) => {
 
   GData.find()
     // .limit(400)
-    .where((expr) => expr.gt('timestamp', startDay))
+    // .where((expr) => expr.gt('timestamp', startDay))
     .orderBy('id', 'asc')
     .all()
     .then((rows) => {
