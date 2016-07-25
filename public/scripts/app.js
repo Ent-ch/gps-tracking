@@ -64,7 +64,7 @@ $.get( "/api/stops", function( data ) {
 
 $.get( "/api/last-position", function( data ) {
   var date = new Date(data.ts);
-  L.marker(data.cords).addTo(mymap).bindPopup('Time:' + date).openPopup();
+  L.marker(data.cords).addTo(mymap).bindPopup('Time:' + date + ' Speed:' + data.speed + ' Orient:' + data.orientation).openPopup();
   // console.log(data);
 });
 

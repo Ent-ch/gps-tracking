@@ -67,6 +67,8 @@ webApp.get('/api/last-position', (req, res) => {
     data.cords[0] = row.lat;
     data.cords[1] = row.lon;
     data.ts = row.created_at;
+    data.speed = row.speed;
+    data.orientation = row.orientation;
   })
   .then(() => {
     res.json(data);
