@@ -26,7 +26,6 @@ let server = gps.server(options, function(device, connection) {
 
   device.on("ping", function(data) {
 
-    console.log(data);
     db.table('gps_log')
       .returning('id')
       .insert({
@@ -38,9 +37,7 @@ let server = gps.server(options, function(device, connection) {
         mileage: data.mileage,
         data: JSON.stringify(data),
       })
-      .then((newId) => console.log('newId', newId) );
-
-
+      .then((newId) => {} );
 
     //this = device
     // console.log("I'm here: " + data.latitude + ", " + data.longitude + " (" + this.getUID() + ")");
@@ -59,7 +56,7 @@ let server = gps.server(options, function(device, connection) {
     db.table('raw_log')
       .returning('id')
       .insert({log: data.toString()})
-      .then((newId) => console.log('newId', newId) );
+      .then((newId) => {} );
 
   });
 

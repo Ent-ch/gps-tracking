@@ -88,17 +88,27 @@ webApp.get('/api/track', (req, res) => {
 });
 
 webApp.get('/api/raw-data', (req, res) => {
-  // CData.find()
-  //   .limit(100)
-  //   .orderBy('id', 'desc')
-  //   .all()
-  //   .then((models) => res.json(models));
+  let data = [];
+  db('raw_log')
+  .orderBy('id', 'desc')
+  .limit(100)
+  .map(row => {
+    data.push(row);
+  })
+  .then(() => {
+    res.json(data);
+  } )
 });
 
 webApp.get('/api/gps-data', (req, res) => {
-  // GData.find()
-  //   .orderBy('id', 'desc')
-  //   .limit(500)
-  //   .all()
-  //   .then((models) => res.json(models));
+  let data = [];
+  db('gps_log')
+  .limit(100)
+  .orderBy('id', 'desc')
+  .map(row => {
+    data.push(row);
+  })
+  .then(() => {
+    res.json(data);
+  } )
 });
