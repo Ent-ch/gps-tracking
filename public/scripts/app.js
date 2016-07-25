@@ -63,7 +63,7 @@ $.get( "/api/stops", function( data ) {
 });
 
 $.get( "/api/last-position", function( data ) {
-  var date = new Date(data.ts * 1000);
+  var date = new Date(data.ts);
   L.marker(data.cords).addTo(mymap).bindPopup('Time:' + date).openPopup();
   // console.log(data);
 });

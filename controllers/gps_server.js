@@ -1,17 +1,13 @@
 import gps from 'gps-tracking';
 
+import db from '../config/db';
+
 let options = {
-    'debug': false, //We don't want to debug info automatically. We are going to log everything manually so you can check what happens everywhere
+    'debug': false,
     'port': 8090,
     'device_adapter': "TK103"
-  },
+  };
   
-  RawData = require('../models/raw_log').collection,
-  GpsData = require('../models/gps_log').collection,
-  
-  CData = new RawData(),
-  GData = new GpsData();
-
 
 let server = gps.server(options, function(device, connection) {
 
@@ -29,18 +25,23 @@ let server = gps.server(options, function(device, connection) {
   });
 
   device.on("ping", function(data) {
-    let devId = this.getUID(),
-      gdata = GData.model({
-        device_id: devId,
-        latitude: data.latitude,
-        longitude: data.longitude,
-        timestamp: Math.floor(Date.now() / 1000)
-      });
 
-    gdata.save()
-      .catch(function(error) {
-        console.log('Could not validated:', error);
-      });
+    console.log(data);
+    db.table('gps_log')
+      .returning('id')
+      .insert({
+        device: this.getUID(),
+        lat: data.latitude,
+        lon: data.longitude,
+        speed: data.speed,
+        orientation: data.orientation,
+        mileage: data.mileage,
+        data: JSON.stringify(data),
+      })
+      .then((newId) => console.log('newId', newId) );
+
+
+
     //this = device
     // console.log("I'm here: " + data.latitude + ", " + data.longitude + " (" + this.getUID() + ")");
     //Look what informations the device sends to you (maybe velocity, gas level, etc)
@@ -54,20 +55,12 @@ let server = gps.server(options, function(device, connection) {
 
   //Also, you can listen on the native connection object
   connection.on('data', function(data) {
-    let textData = data.toString(),
-      sdata = CData.model({
-        data: textData,
-        ts: Math.floor(Date.now() / 1000)
-      });
 
-    sdata.save()
-      .then(function(model) {
-        // let id = model.get('id');
-        // console.log('Created new post with ID:', model);
-      })
-      .catch(function(error) {
-        console.log('Could not validated:', error);
-      });
+    db.table('raw_log')
+      .returning('id')
+      .insert({log: data.toString()})
+      .then((newId) => console.log('newId', newId) );
+
   });
 
 });

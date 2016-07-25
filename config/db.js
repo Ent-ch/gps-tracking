@@ -1,16 +1,35 @@
-var f = require('firenze');
-var SqliteAdapter = require('firenze-adapter-sqlite3');
-var config = require('./config');
-
-var Database = f.Database;
-
-var db = new Database({
-  adapter: SqliteAdapter,
-  filename: config.sqlite.database,
+var knex = require('knex')({
+  client: 'sqlite3',
+  connection: {
+    filename: "db/data.db"
+  },
   migrations: {
-    table: 'z_migrations',
-    directory: __dirname + '/migrations',
-  }
+    tableName: 'migrations'
+  },
+  useNullAsDefault: true  
 });
 
-module.exports = db;
+
+knex.schema.createTableIfNotExists('raw_log', function (table) {
+  table.increments('id');
+  table.text('log');
+  table.timestamp('created_at').defaultTo(knex.fn.now());
+})
+.createTableIfNotExists('gps_log', function(table) {
+  table.increments('id');
+  table.string('device');
+  table.float('lon');
+  table.float('lat');
+  table.float('speed');
+  table.float('orientation');
+  table.float('mileage');
+  table.text('data');
+  table.timestamp('created_at').defaultTo(knex.fn.now());
+  // table.index('device');
+})
+.catch(function(e) {
+  console.error(e);
+});
+
+
+module.exports = knex;
