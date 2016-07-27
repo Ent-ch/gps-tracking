@@ -109,6 +109,9 @@ $.get( "/api/tracks", function( data ) {
     checkboxes: true,
     checkAllToggle: false,
     rowClicked: function(data) {
+      $.get(`/api/tracks/${data.row.id}`, (data) => {
+        let polyline = L.polyline(data, {color: 'red'}).addTo(mymap);
+      })
       // let date = new Date(data.row.ts);
       // if (!data.column.name) {
       //   if (data.checked) {
