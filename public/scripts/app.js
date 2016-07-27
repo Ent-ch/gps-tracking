@@ -60,6 +60,7 @@ $.get( "/api/stops", function( data ) {
       // L.marker(data.row.pos).addTo(mymap).bindPopup('Time:' + date + ' Duration:' + data.row.dur + ' min.');
     },
   });
+
 });
 
 $.get( "/api/last-position", function( data ) {
@@ -68,8 +69,56 @@ $.get( "/api/last-position", function( data ) {
   // console.log(data);
 });
 
-$.get( "/api/track", function( data ) {
-  let polyline = L.polyline(data.cords, {color: 'red'}).addTo(mymap);
-  console.log(data);
+$.get( "/api/tracks", function( data ) {
+  let selectedTracks = [];
+  // let polyline = L.polyline(data.cords, {color: 'red'}).addTo(mymap);
+  // console.log(data);
+    $('#tracks-table').WATable({
+    data: {
+      cols: {
+        id: {
+          index: 1,
+          type: "number",
+          friendly: "Num",
+          unique: true,
+        },
+        device: {
+          index: 2,
+          type: "string",
+          friendly: "Device",
+        },
+        distance: {
+          index: 3,
+          type: "number",
+          friendly: "Distance",
+        },
+        start_time: {
+          index: 4,
+          type: "date",
+          friendly: "Start",
+        },
+        stop_time: {
+          index: 5,
+          type: "date",
+          friendly: "End",
+        },
+      },
+
+      rows: data,
+    },
+    checkboxes: true,
+    checkAllToggle: false,
+    rowClicked: function(data) {
+      // let date = new Date(data.row.ts);
+      // if (!data.column.name) {
+      //   if (data.checked) {
+      //     mymap.addLayer(data.row.pos);
+      //   } else {
+      //     mymap.removeLayer(data.row.pos);
+      //   }
+      // }
+    },
+  });
+
 });
 

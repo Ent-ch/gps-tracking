@@ -16,46 +16,61 @@ webApp.listen(4000);
 
 webApp.get('/api/stops', (req, res) => {
   let lastCords,
-      nowCords,
-      result,
-      stop = [],
-      stops = [],
-      filterStops = [],
+      prevTime,
+      prevSpeed,
+      prevId,
+      prevDevice,
+      fistRow,
+      prewRow,
       cords = [];
 
-  // GData.find()
-  //   // .limit(400)
-  //   // .where((expr) => expr.gt('timestamp', startDay))
-  //   .orderBy('id', 'asc')
-  //   .all()
-  //   .then((rows) => {
-  //     rows.forEach((row) => {
 
-  //       nowCords = [parseFloat(row.attributes.latitude), parseFloat(row.attributes.longitude), row.attributes.timestamp, row.attributes.id];
-  //       lastCords = cords.pop();
+  db('gps_log')
+  .orderBy('device, id', 'asc')
+  .whereRaw('id > (SELECT max(stop_id) FROM tracks)')
+  .map(row => {
+    if (prevDevice && row.device !== prevDevice) {
+      prevDevice, prevTime = undefined;
+      cords = [];
+    }
+    if (!prevTime) {
+      fistRow = row;
+    }
 
-  //       if (lastCords && distance([lastCords, nowCords]) < 0.005) {
-  //         if (!stop.length) {
-  //           stop.push(lastCords);
-  //         }
-  //         stop.push(nowCords);
-  //       } else {
-  //         if (stop.length) {
-  //           stops.push(stop);
-  //           stop = [];
-  //         }
-  //       }
-  //       cords.push(nowCords);
-  //     });
+    cords.push([row.lat, row.lon]);
+    if (prevTime) {
+      let dif = new Date(row.created_at) - prevTime;
+      if (dif > 90000) {
+        let dist = distance(cords);
+        if (dist > 0.005) {
+          db.table('tracks')
+            .returning('id')
+            .insert({
+              device: prewRow.device,
+              start_id: fistRow.id,
+              stop_id: prewRow.id,
+              start_time: fistRow.created_at,
+              stop_time: prewRow.created_at,
+              distance: dist,
+            })
+            .then((newId) => {} );
+        }
+        cords = [];
+        fistRow = row;
+      }
+    }
+    
+    prewRow = row;
+    prevId = row.id;
+    prevTime = new Date(row.created_at);
+    prevDevice = row.device;
+  })
+  .then(() => {
+    // res.json(data);
+    console.log('Calculated.');
+  } )
 
-  //     stops.forEach((elem) => {
-  //       let dur = (elem[elem.length - 1][2] - elem[0][2]);
-  //       if (dur >= 60) {
-  //         filterStops.push([elem[0], dur]);
-  //       }
-  //     });
-      res.json(filterStops);
-    // });
+  res.json([]);
 });
 
 webApp.get('/api/last-position', (req, res) => {
@@ -68,17 +83,27 @@ webApp.get('/api/last-position', (req, res) => {
     data.cords[1] = row.lon;
     data.ts = row.created_at;
     data.speed = row.speed;
-    data.orientation = row.orientation;
+    res.json(data);
+  } )
+});
+
+webApp.get('/api/tracks', (req, res) => {
+  let data = [];
+
+  db('tracks')
+  .orderBy('id', 'desc')
+  .map(row => {
+    data.push(row);
   })
   .then(() => {
     res.json(data);
   } )
 });
 
-webApp.get('/api/track', (req, res) => {
+webApp.get('/api/track/:id', (req, res) => {
   let data = {cords: [], ts1: 0, ts2: 0};
 
-  db('gps_log')
+  db('tracks')
   .where('created_at', '>', startDay)
   .orderBy('id', 'desc')
   .map(row => {
