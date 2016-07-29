@@ -1,6 +1,5 @@
-import distance from 'gps-distance';
-
 import db from '../config/db';
+import * as calcData from './calc.data';
 
 let express = require('express'),
     webApp = express(),
@@ -20,61 +19,8 @@ webApp.get('/api/stops', (req, res) => {
 });
   
 webApp.get('/api/calc', (req, res) => {
-  let lastCords,
-      prevTime,
-      prevSpeed,
-      prevId,
-      prevDevice,
-      fistRow,
-      prewRow,
-      cords = [];
-
-
-  db('gps_log')
-  .orderBy('device, id', 'asc')
-  // .whereRaw('id > (SELECT max(stop_id) FROM tracks)')
-  .map(row => {
-    if (prevDevice && row.device !== prevDevice) {
-      prevDevice, prevTime = undefined;
-      cords = [];
-    }
-    if (!prevTime) {
-      fistRow = row;
-    }
-
-    cords.push([row.lat, row.lon]);
-    if (prevTime) {
-      let dif = new Date(row.created_at) - prevTime;
-      if (dif > 90000) {
-        let dist = distance(cords);
-        if (dist > 0.005) {
-          db.table('tracks')
-            .returning('id')
-            .insert({
-              device: prewRow.device,
-              start_id: fistRow.id,
-              stop_id: prewRow.id,
-              start_time: fistRow.created_at,
-              stop_time: prewRow.created_at,
-              distance: dist,
-            })
-            .then((newId) => {} );
-        }
-        cords = [];
-        fistRow = row;
-      }
-    }
-    
-    prewRow = row;
-    prevId = row.id;
-    prevTime = new Date(row.created_at);
-    prevDevice = row.device;
-  })
-  .then(() => {
-    // res.json(data);
-    console.log('Calculated.');
-  } )
-
+  calcData.calcTracks();
+  // calcData.calcStops();
   res.json([]);
 });
 

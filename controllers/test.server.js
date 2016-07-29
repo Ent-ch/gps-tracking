@@ -3,8 +3,8 @@ import net from 'net';
 net.createServer(function (socket) {
   // var remClient = socket.remoteAddress + ":" + socket.remotePort;
   // console.log(remClient);
-  var d = new Date();
-  console.log("New device connected at ", d);
+  let d = new Date();
+  console.log("New test device connected at ", d.toDateString());
 
   socket.on('data', function (data) {
     console.log(data.toString());

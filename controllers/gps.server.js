@@ -5,7 +5,7 @@ import db from '../config/db';
 let options = {
     'debug': false,
     'port': 8090,
-    'device_adapter': "TK103"
+    'device_adapter': "TK103",
   };
   
 
@@ -13,7 +13,7 @@ let server = gps.server(options, function(device, connection) {
 
   device.on("connected", function(data) {
     let d = new Date();
-    console.log("New device connected at ", d);
+    console.log("New device connected at ", data, d);
     this.login_authorized(true);
     return data;
   });
