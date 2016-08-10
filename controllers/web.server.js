@@ -19,9 +19,8 @@ webApp.get('/api/stops', (req, res) => {
 });
   
 webApp.get('/api/calc', (req, res) => {
-  calcData.calcTracks();
-  // calcData.calcStops();
-  res.json([]);
+  calcData.calcAll();
+  res.send({});
 });
 
 webApp.get('/api/last-position', (req, res) => {

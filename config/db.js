@@ -36,7 +36,6 @@ knex.schema.createTableIfNotExists('raw_log', (table)=> {
   table.float('distance');
   table.timestamp('start_time');
   table.timestamp('stop_time');
-  table.timestamp('created_at').defaultTo(knex.fn.now());
   // table.index('device');
 })
 .createTableIfNotExists('stops', (table) => {
@@ -46,7 +45,6 @@ knex.schema.createTableIfNotExists('raw_log', (table)=> {
   table.integer('stop_id');
   table.timestamp('start_time');
   table.timestamp('stop_time');
-  table.timestamp('created_at').defaultTo(knex.fn.now());
   // table.index('device');
 })
 .catch(function(e) {
