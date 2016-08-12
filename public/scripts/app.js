@@ -11,12 +11,15 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 
 $.get( "/api/stops", function( data ) {
   let rows = [];
-  data.forEach(function (elem) {
-    // let date = new Date(elem[0][2] * 1000);
-    // L.marker([elem[0][0], elem[0][1]]).addTo(mymap).bindPopup('Time:' + date + ' Duration:' + elem[1] + ' sec.');
-  });
-  rows = data.map((el, i) => Object.assign({}, {id: ++i, ts: el[0][2] * 1000, dur: el[1] / 60, pos: L.marker([el[0][0], el[0][1]])}));
-  // console.log(rows);
+
+  rows = data.map((el, i) => Object.assign({},
+    {
+      id: el.id, device: el.device, ts: el.start_time,
+      dur: (new Date(el.stop_time) - new Date(el.start_time)) / 60000,
+      pos: L.marker([el.lat, el.lon]),
+    }
+  ));
+
   $('#stops-table').WATable({
     data: {
       cols: {
@@ -25,6 +28,11 @@ $.get( "/api/stops", function( data ) {
           type: "number",
           friendly: "Num",
           unique: true,
+        },
+        device: {
+          index: 2,
+          type: "string",
+          friendly: "Device",
         },
         ts: {
           index: 2,
@@ -57,7 +65,6 @@ $.get( "/api/stops", function( data ) {
           mymap.removeLayer(data.row.pos);
         }
       }
-      // L.marker(data.row.pos).addTo(mymap).bindPopup('Time:' + date + ' Duration:' + data.row.dur + ' min.');
     },
   });
 

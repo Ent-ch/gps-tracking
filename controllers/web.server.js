@@ -15,7 +15,14 @@ webApp.listen(4000);
 
 
 webApp.get('/api/stops', (req, res) => {
-  res.json([]);
+  let data = {};
+
+  db('stops')
+  .orderBy('id', 'desc')
+  .then((rows) => {
+    // console.log(rows);
+    res.json(rows);
+  } );
 });
   
 webApp.get('/api/calc', (req, res) => {

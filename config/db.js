@@ -45,6 +45,8 @@ knex.schema.createTableIfNotExists('raw_log', (table)=> {
   table.integer('stop_id');
   table.timestamp('start_time');
   table.timestamp('stop_time');
+  table.float('lon');
+  table.float('lat');
   // table.index('device');
 })
 .catch(function(e) {

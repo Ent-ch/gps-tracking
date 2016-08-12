@@ -90,6 +90,8 @@ function calcStops(maxId = 0) {
               stop_id: prevRow.id,
               start_time: fistRow.created_at,
               stop_time: prevRow.created_at,
+              lat: fistRow.lat,
+              lon: fistRow.lon,
             })
             .then((newId) => {} );
 
