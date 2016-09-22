@@ -9,6 +9,58 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 
 
 
+$.get( "/api/devices", function( data ) {
+  let rows = [];
+
+  rows = data.map((el, i) => Object.assign({},
+    {
+      id: el.id, 
+      device: el.device, 
+      ts: el.created_at,
+      // pos: L.marker([el.lat, el.lon]),
+    }
+  ));
+
+  $('#devices-table').WATable({
+    data: {
+      cols: {
+        device: {
+          index: 1,
+          type: "string",
+          friendly: "Device",
+          unique: true,
+        },
+        ts: {
+          index: 2,
+          type: "date",
+          friendly: "Last cords time",
+        },
+        pos: {
+          index: 3,
+          type: "string",
+          friendly: "Position",
+          hidden: true,
+        },
+      },
+      rows: rows,
+    },
+    checkboxes: true,
+    checkAllToggle: false,
+    rowClicked: function(data) {
+      // console.log('row clicked', data);
+      let date = new Date(data.row.ts);
+      if (!data.column.name) {
+        if (data.checked) {
+          mymap.addLayer(data.row.pos);
+        } else {
+          mymap.removeLayer(data.row.pos);
+        }
+      }
+    },
+  });
+
+});
+
 $.get( "/api/stops", function( data ) {
   let rows = [];
 
@@ -35,17 +87,17 @@ $.get( "/api/stops", function( data ) {
           friendly: "Device",
         },
         ts: {
-          index: 2,
+          index: 3,
           type: "date",
           friendly: "Time",
         },
         dur: {
-          index: 3,
+          index: 4,
           type: "number",
           friendly: "Duration",
         },
         pos: {
-          index: 4,
+          index: 5,
           type: "string",
           friendly: "Position",
           hidden: true,

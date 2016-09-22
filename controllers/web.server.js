@@ -44,6 +44,21 @@ webApp.get('/api/last-position', (req, res) => {
   } )
 });
 
+webApp.get('/api/devices', (req, res) => {
+  let data = [];
+
+  db('gps_log')
+  .groupBy('device')
+  // .max('created_at')
+  .orderBy('id', 'desc')
+  .map(row => {
+    data.push(row);
+  })
+  .then(() => {
+    res.json(data);
+  } );
+});
+
 webApp.get('/api/tracks', (req, res) => {
   let data = [];
 
@@ -55,7 +70,6 @@ webApp.get('/api/tracks', (req, res) => {
   .then(() => {
     res.json(data);
   } );
-
 });
 
 webApp.get('/api/tracks/:id', (req, res) => {
