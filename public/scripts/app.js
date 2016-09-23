@@ -1,4 +1,5 @@
-let mymap = L.map('mapid').setView([48.61, 35.32], 10);
+let mymap = L.map('mapid').setView([48.61, 35.32], 10),
+  stopsTable, tracksTable;
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -6,8 +7,6 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     id: 'mapbox.streets',
     accessToken: 'pk.eyJ1IjoiZW50Y2giLCJhIjoiY2ltMXN0bTI5MDBsY3V4bTRnbm96dTB1YiJ9.C7LkuHIyaoUW7KcJTNBbSw',
 }).addTo(mymap);
-
-
 
 $.get( "/api/devices", function( data ) {
   let rows = [];
@@ -77,7 +76,6 @@ $.get( "/api/devices", function( data ) {
     }, 3000);
     },
   });
-
 });
 
 $.get( "/api/stops", function( data ) {
@@ -91,7 +89,7 @@ $.get( "/api/stops", function( data ) {
     }
   ));
 
-  $('#stops-table').WATable({
+  stopsTable = $('#stops-table').WATable({
     data: {
       cols: {
         id: {
@@ -126,19 +124,13 @@ $.get( "/api/stops", function( data ) {
     },
     checkboxes: true,
     checkAllToggle: true,
-    rowClicked: function(data) {
-      // console.log('row clicked', data);
-      let date = new Date(data.row.ts);
-      if (!data.column.name) {
-        if (data.checked) {
-          mymap.addLayer(data.row.pos);
-        } else {
-          mymap.removeLayer(data.row.pos);
-        }
-      }
+    columnClicked: function(data) {
+      console.log('col click', data);
     },
-  });
-
+    rowClicked: function(data) {
+      console.log('row clicked', data);
+    },
+  }).data('WATable');
 });
 
 // $.get( "/api/last-position", function( data ) {
@@ -149,9 +141,7 @@ $.get( "/api/stops", function( data ) {
 
 $.get( "/api/tracks", function( data ) {
   let selectedTracks = [];
-  // let polyline = L.polyline(data.cords, {color: 'red'}).addTo(mymap);
-  // console.log(data);
-    $('#tracks-table').WATable({
+    tracksTable = $('#tracks-table').WATable({
     data: {
       cols: {
         id: {
@@ -181,11 +171,10 @@ $.get( "/api/tracks", function( data ) {
           friendly: "End",
         },
       },
-
       rows: data,
     },
     checkboxes: true,
-    checkAllToggle: false,
+    checkAllToggle: true,
     rowClicked: function(data) {
       $.get(`/api/tracks/${data.row.id}`, (data) => {
         let polyline = L.polyline(data, {color: 'red'}).addTo(mymap);
@@ -199,7 +188,24 @@ $.get( "/api/tracks", function( data ) {
         }
       }
     },
-  });
-
+  }).data('WATable');
 });
 
+function showHideStops(show) {
+  let selStops = stopsTable.getData(show).rows;
+  selStops.forEach(function(element) {
+    if (show) {
+      mymap.addLayer(element.pos);
+    } else {
+      mymap.removeLayer(element.pos);
+    }
+  }); 
+} 
+
+function showTracks() {
+  console.log('showTracks');
+} 
+
+function hideTracks() {
+  console.log('hideTracks');
+} 
