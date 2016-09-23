@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "nodemon index.js",
-    "postinstall": "echo 123",
-    "start": "node index.js"
-  },
+    "start": "node index.js",
+    "postinstall": "bower install -p",
+    "prestart": "bower install --offline",
+    "update": "bower update" },
   "keywords": [
     "gps-tracking",
     "demo"
@@ -16,6 +17,7 @@
   "license": "MIT",
   "homepage": "https://github.com/Ent-ch/gps-tracking",
   "dependencies": {
+    "bower": "^1.7.9",
     "colors": "^1.1.2",
     "express": "^4.13.4",
     "gps-distance": "0.0.4",

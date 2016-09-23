@@ -1,4 +1,4 @@
-let mymap = L.map('mapid').setView([48.61, 35.32], 13);
+let mymap = L.map('mapid').setView([48.61, 35.32], 8);
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -122,11 +122,11 @@ $.get( "/api/stops", function( data ) {
 
 });
 
-$.get( "/api/last-position", function( data ) {
-  let date = new Date(data.ts);
-  L.marker(data.cords).addTo(mymap).bindPopup('Time:' + date + ' Speed:' + data.speed + ' Orient:' + data.orientation).openPopup();
-  // console.log(data);
-});
+// $.get( "/api/last-position", function( data ) {
+//   let date = new Date(data.ts);
+//   L.marker(data.cords).addTo(mymap).bindPopup('Time:' + date + ' Speed:' + data.speed + ' Orient:' + data.orientation).openPopup();
+//   // console.log(data);
+// });
 
 $.get( "/api/tracks", function( data ) {
   let selectedTracks = [];

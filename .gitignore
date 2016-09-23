@@ -8,3 +8,4 @@ node_modules
 adminer
 adminer.php
 /nbproject/private/
+/public/vendor

@@ -1,0 +1,31 @@
+{
+  "name": "gps-tracking",
+  "description": "Demo App for gps-tracing node.js package",
+  "main": "index.js",
+  "authors": [
+    "Ent-ch"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "gps-tracking",
+    "demo"
+  ],
+  "homepage": "https://github.com/Ent-ch/gps-tracking",
+  "moduleType": [
+    "es6"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "leaflet-tracksymbol": "^1.0.5",
+    "jquery": "^3.1.1",
+    "WATable": "^1.10.2",
+    "leaflet": "^0.7.7"
+  }
+}
