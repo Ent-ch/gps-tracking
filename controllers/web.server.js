@@ -36,12 +36,8 @@ webApp.get('/api/last-position', (req, res) => {
   .orderBy('id', 'desc')
   .limit(1)
   .map(row => {
-    data.cords[0] = row.lat;
-    data.cords[1] = row.lon;
-    data.ts = row.created_at;
-    data.speed = row.speed;
-    res.json(data);
-  } )
+    res.json(row);
+  })
 });
 
 webApp.get('/api/devices', (req, res) => {

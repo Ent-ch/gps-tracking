@@ -1,4 +1,4 @@
-let mymap = L.map('mapid').setView([48.61, 35.32], 8);
+let mymap = L.map('mapid').setView([48.61, 35.32], 10);
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -17,7 +17,7 @@ $.get( "/api/devices", function( data ) {
       id: el.id, 
       device: el.device, 
       ts: el.created_at,
-      // pos: L.marker([el.lat, el.lon]),
+      pos: {lat: el.lat, lon: el.lon, orient: el.orientation, speed: el.speed},
     }
   ));
 
@@ -47,15 +47,34 @@ $.get( "/api/devices", function( data ) {
     checkboxes: true,
     checkAllToggle: false,
     rowClicked: function(data) {
-      // console.log('row clicked', data);
-      let date = new Date(data.row.ts);
-      if (!data.column.name) {
-        if (data.checked) {
-          mymap.addLayer(data.row.pos);
-        } else {
-          mymap.removeLayer(data.row.pos);
-        }
-      }
+      let pos = data.row.pos, 
+        trackMarker = L.trackSymbol(L.latLng(pos.lat, pos.lon), {
+          trackId: 123,
+          fill: true,
+          fillColor: '#0033ff',
+          fillOpacity: 0.5,
+          speed: pos.speed,
+          course: pos.orient,
+          heading: pos.orient,
+        });
+
+    trackMarker.addTo(mymap);
+
+    setInterval(function() {
+      mymap.removeLayer(trackMarker);
+      $.get( "/api/last-position", function( data ) {
+        trackMarker = L.trackSymbol(L.latLng(data.lat, data.lon), {
+          trackId: 123,
+          fill: true,
+          fillColor: '#0033ff',
+          fillOpacity: 0.5,
+          speed: data.speed,
+          course: data.orientation,
+          heading: data.orientation,
+        });
+        trackMarker.addTo(mymap);
+      });
+    }, 3000);
     },
   });
 
@@ -106,7 +125,7 @@ $.get( "/api/stops", function( data ) {
       rows: rows,
     },
     checkboxes: true,
-    checkAllToggle: false,
+    checkAllToggle: true,
     rowClicked: function(data) {
       // console.log('row clicked', data);
       let date = new Date(data.row.ts);
@@ -171,14 +190,14 @@ $.get( "/api/tracks", function( data ) {
       $.get(`/api/tracks/${data.row.id}`, (data) => {
         let polyline = L.polyline(data, {color: 'red'}).addTo(mymap);
       })
-      // let date = new Date(data.row.ts);
-      // if (!data.column.name) {
-      //   if (data.checked) {
-      //     mymap.addLayer(data.row.pos);
-      //   } else {
-      //     mymap.removeLayer(data.row.pos);
-      //   }
-      // }
+      let date = new Date(data.row.ts);
+      if (!data.column.name) {
+        if (data.checked) {
+          mymap.addLayer(data.row.pos);
+        } else {
+          mymap.removeLayer(data.row.pos);
+        }
+      }
     },
   });
 
