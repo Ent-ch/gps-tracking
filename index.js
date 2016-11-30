@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 var db = require('./config/db');
 var fs = require('fs');
 

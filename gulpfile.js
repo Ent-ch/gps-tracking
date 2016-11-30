@@ -1,3 +1,4 @@
+/* eslint-disable */
 var babel = require('gulp-babel');
 var browserSync = require('browser-sync');
 var gulp = require('gulp');

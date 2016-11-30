@@ -8,7 +8,8 @@
     "start": "node index.js",
     "postinstall": "bower install -p",
     "prestart": "bower install --offline",
-    "update": "bower update" },
+    "update": "bower update"
+  },
   "keywords": [
     "gps-tracking",
     "demo"
@@ -33,6 +34,7 @@
     "eslint": "^3.1.1",
     "gulp": "^3.8.8",
     "gulp-babel": "^5.1.0",
+    "nodemon": "^1.11.0",
     "superstatic": "^1.2.3"
   }
 }
