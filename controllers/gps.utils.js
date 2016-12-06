@@ -40,3 +40,18 @@ export function calculateSpeed(t1, lat1, lng1, t2, lat2, lng2) {
 
     return distance / t2 - t1;
 }
+
+export function compass(deg) {
+    switch (deg) {
+        case 45 > deg && deg >= 315 :
+            return 'N'
+        case 315 > deg && deg >= 225 :
+            return 'E'
+        case 225 > deg && deg >= 135 :
+            return 'N'
+        case 135 > deg && deg >= 45 :
+            return 'N'
+        default:
+           return false;
+    }
+}
