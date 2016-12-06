@@ -21,3 +21,22 @@ function toDeg(rad) {
     return rad * 180 / Math.PI;
 }
 
+export function calculateSpeed(t1, lat1, lng1, t2, lat2, lng2) {
+    if (typeof(Number.prototype.toRad) === "undefined") {
+        Number.prototype.toRad = function () {
+            return this * Math.PI / 180;
+        }
+    }
+    const R = 6371; // km
+    let dLat = (lat2 - lat1).toRad(),
+        dLon = (lon2 - lon1).toRad(),
+        lat1 = lat1.toRad(),
+        lat2 = lat2.toRad();
+
+    let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) 
+        * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2),
+        c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
+        distance = R * c;
+
+    return distance / t2 - t1;
+}
