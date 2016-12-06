@@ -3,14 +3,17 @@ import * as calcData from './calc.data';
 import { bearing } from './gps.utils';
 
 let express = require('express'),
-    webApp = express(),
-    path = require('path');
+  expressLogging = require('express-logging'),
+  logger = require('logops'),
+  webApp = express(),
+  path = require('path');
 
 let today = new Date(),
     startDay = (new Date(today.getFullYear(), today.getMonth(), today.getDate())).getTime() / 1000;
 
 let publFolder = path.join(__dirname, '../', 'public');
 webApp.use(express.static(publFolder));
+webApp.use(expressLogging(logger));
 
 webApp.listen(4000);
 
@@ -21,7 +24,6 @@ webApp.get('/api/stops', (req, res) => {
   db('stops')
   .orderBy('id', 'desc')
   .then((rows) => {
-    // console.log(rows);
     res.json(rows);
   } );
 });
@@ -33,6 +35,7 @@ webApp.get('/api/calc', (req, res) => {
 
 webApp.get('/api/last-position', (req, res) => {
   let lastData, data = {lat: 0, lon: 0, orientation: 0};
+
   db('gps_log')
   .orderBy('id', 'desc')
   .limit(2)
