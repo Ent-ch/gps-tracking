@@ -17,6 +17,8 @@ $.get( "/api/devices", function( data ) {
       device: el.device, 
       ts: el.created_at,
       pos: {lat: el.lat, lon: el.lon, orient: el.orientation, speed: el.speed},
+      orient: el.orientation,
+      speed: el.speed,
     }
   ));
 
@@ -40,6 +42,16 @@ $.get( "/api/devices", function( data ) {
           friendly: "Position",
           hidden: true,
         },
+        speed: {
+          index: 4,
+          type: "number",
+          friendly: "Speed",
+        },
+        orient: {
+          index: 5,
+          type: "number",
+          friendly: "orientation",
+        },
       },
       rows: rows,
     },
@@ -47,33 +59,33 @@ $.get( "/api/devices", function( data ) {
     checkAllToggle: false,
     rowClicked: function(data) {
       let pos = data.row.pos, 
-        trackMarker = L.trackSymbol(L.latLng(pos.lat, pos.lon), {
-          trackId: 123,
-          fill: true,
-          fillColor: '#0033ff',
-          fillOpacity: 0.5,
-          speed: pos.speed,
-          course: pos.orient,
-          heading: pos.orient,
-        });
-
-    trackMarker.addTo(mymap);
-
-    setInterval(function() {
-      mymap.removeLayer(trackMarker);
-      $.get( "/api/last-position", function( data ) {
-        trackMarker = L.trackSymbol(L.latLng(data.lat, data.lon), {
-          trackId: 123,
-          fill: true,
-          fillColor: '#0033ff',
-          fillOpacity: 0.5,
-          speed: data.speed,
-          course: data.orientation,
-          heading: data.orientation,
-        });
-        trackMarker.addTo(mymap);
+      trackMarker = L.trackSymbol(L.latLng(pos.lat, pos.lon), {
+        trackId: 123,
+        fill: true,
+        fillColor: '#0033ff',
+        fillOpacity: 0.5,
+        speed: pos.speed,
+        course: pos.orient,
+        heading: pos.orient,
       });
-    }, 3000);
+      console.log(pos);
+      trackMarker.addTo(mymap);
+
+      setInterval(function() {
+        // mymap.removeLayer(trackMarker);
+        $.get( "/api/last-position", function( data ) {
+          let trackMarker = L.trackSymbol(L.latLng(data.lat, data.lon), {
+            trackId: 123,
+            fill: true,
+            fillColor: '#0033ff',
+            fillOpacity: 0.5,
+            speed: data.speed,
+            course: data.orientation,
+            heading: data.orientation,
+          });
+          trackMarker.addTo(mymap);
+        });
+      }, 3000);
     },
   });
 });
