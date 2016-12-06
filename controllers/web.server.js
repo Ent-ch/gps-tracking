@@ -1,5 +1,6 @@
 import db from '../config/db';
 import * as calcData from './calc.data';
+import { bearing } from './gps.utils';
 
 let express = require('express'),
     webApp = express(),
@@ -11,7 +12,7 @@ let today = new Date(),
 let publFolder = path.join(__dirname, '../', 'public');
 webApp.use(express.static(publFolder));
 
-webApp.listen(5000);
+webApp.listen(4000);
 
 
 webApp.get('/api/stops', (req, res) => {
@@ -31,13 +32,21 @@ webApp.get('/api/calc', (req, res) => {
 });
 
 webApp.get('/api/last-position', (req, res) => {
-  let data = {cords: [0, 0], ts: 0};
+  let lastData, data = {lat: 0, lon: 0, orientation: 0};
   db('gps_log')
   .orderBy('id', 'desc')
-  .limit(1)
-  .map(row => {
-    res.json(row);
+  .limit(2)
+  .map((row, i) => {
+    if (i === 0) {
+      lastData = row;
+      return;
+    }
+    data = lastData;
+    data.orientation = bearing(row.lat, row.lon, lastData.lat, lastData.lon);
   })
+  .then(() => {
+    res.json(data);
+  });
 });
 
 webApp.get('/api/devices', (req, res) => {

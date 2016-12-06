@@ -1,17 +1,23 @@
-import net from 'net';
+export function bearing(lat1, lng1, lat2, lng2) {
 
-net.createServer(function (socket) {
-  // var remClient = socket.remoteAddress + ":" + socket.remotePort;
-  // console.log(remClient);
-  let d = new Date();
-  console.log("New test device connected at ", d.toDateString());
+    let dLon = toRad(lng2 - lng1);
 
-  socket.on('data', function (data) {
-    console.log(data.toString());
-  });
-  socket.on('end', function () {
-    console.log('client disconected');
-  });
-}).listen(8095);
+    lat1 = toRad(lat1);
+    lat2 = toRad(lat2);
 
-console.log("Test server running at port 8095\n");
+    let y = Math.sin(dLon) * Math.cos(lat2),
+        x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon),
+        rad = Math.atan2(y, x),
+        brng = toDeg(rad);
+
+    return (brng + 360) % 360;
+}
+
+function toRad(deg) {
+    return deg * Math.PI / 180;
+}
+
+function toDeg(rad) {
+    return rad * 180 / Math.PI;
+}
+
