@@ -56,6 +56,7 @@ webApp.get('/api/last-position', (req, res) => {
       data.orientation = bearing(row.lat, row.lon, lastData.lat, lastData.lon);
     })
     .then(() => {
+      data.compass = compassEarth(data.orientation);
       res.json(data);
     });
 });
@@ -70,12 +71,9 @@ webApp.get('/api/devices', (req, res) => {
       console.log(row);
       console.log(compassEarth);
       row.compass = compassEarth(row.orientation);
-      data.push(Object.assign(commonData, row));
+      data.push(Object.assign({}, row));
     })
     .then(() => {
-      if (data.length === 0) {
-        data.push(commonData);
-      }
       res.json(data);
     });
 });

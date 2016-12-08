@@ -108,7 +108,7 @@ $(document).ready(function () {
                 speed: data.speed,
                 course: data.orientation,
                 heading: data.orientation,
-                // compass: data.compass,
+                compass: data.compass,
               });
               trackMarker.addTo(mymap);
             });
