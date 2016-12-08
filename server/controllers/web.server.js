@@ -68,9 +68,8 @@ webApp.get('/api/devices', (req, res) => {
   // .max('created_at')
     .orderBy('id', 'desc')
     .map(row => {
-      console.log(row);
-      console.log(compassEarth);
       row.compass = compassEarth(row.orientation);
+      console.log(row);
       data.push(Object.assign({}, row));
     })
     .then(() => {
