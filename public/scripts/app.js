@@ -91,7 +91,7 @@ $(document).ready(function () {
             speed: pos.speed,
             course: pos.orient,
             heading: pos.orient,
-            compass: data.compass,
+            compass: pos.compass,
           });
         console.log(pos);
         trackMarker.addTo(mymap);
@@ -111,6 +111,7 @@ $(document).ready(function () {
                 compass: data.compass,
               });
               trackMarker.addTo(mymap);
+              console.log(data);
             });
         }, 3000);
       },

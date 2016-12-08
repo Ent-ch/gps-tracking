@@ -45,20 +45,18 @@ let calculateSpeed = (t1, lat1, lng1, t2, lat2, lng2) => {
 let compassEarth = (deg) => {
     let floatDeg = parseFloat(deg);
 
-    if (45 < floatDeg && floatDeg >= 315) {
-        return 'N';
+    switch (true) {
+        case (45 < floatDeg && floatDeg >= 315) :
+            return 'N';
+        case (315 < floatDeg && floatDeg >= 225) :
+            return 'E';
+        case (225 < floatDeg && floatDeg >= 135) :
+            return 'S';
+        case (135 < floatDeg && floatDeg >= 45) :
+            return 'W';
+        default:
+            return false;
     }
-    if (315 < floatDeg && floatDeg >= 225) {
-        return 'E';
-    }
-    if (225 < floatDeg && floatDeg >= 135) {
-        return 'S';
-    }
-    if (135 < floatDeg && floatDeg >= 45) {
-        return 'W';
-    }
-        
-    return false;
 }
 
 export {calculateSpeed, bearing, compassEarth};

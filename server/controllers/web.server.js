@@ -54,9 +54,9 @@ webApp.get('/api/last-position', (req, res) => {
       }
       data = lastData;
       data.orientation = bearing(row.lat, row.lon, lastData.lat, lastData.lon);
+      data.compass = compassEarth(data.orientation);
     })
     .then(() => {
-      data.compass = compassEarth(data.orientation);
       res.json(data);
     });
 });
