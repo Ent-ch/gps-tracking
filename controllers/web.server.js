@@ -1,6 +1,6 @@
 import db from '../config/db';
 import * as calcData from './calc.data';
-import { bearing } from './gps.utils';
+import { bearing, compass } from './gps.utils';
 
 let express = require('express'),
   expressLogging = require('express-logging'),
@@ -34,7 +34,7 @@ webApp.get('/api/calc', (req, res) => {
 });
 
 webApp.get('/api/last-position', (req, res) => {
-  let lastData, data = {lat: 0, lon: 0, orientation: 0};
+  let lastData, data = {lat: 0, lon: 0, orientation: 0, compass: 'N'};
 
   db('gps_log')
   .orderBy('id', 'desc')
@@ -46,6 +46,7 @@ webApp.get('/api/last-position', (req, res) => {
     }
     data = lastData;
     data.orientation = bearing(row.lat, row.lon, lastData.lat, lastData.lon);
+    data.compass = compass(data.orientation);
   })
   .then(() => {
     res.json(data);

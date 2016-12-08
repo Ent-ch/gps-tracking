@@ -50,7 +50,12 @@ $.get( "/api/devices", function( data ) {
         orient: {
           index: 5,
           type: "number",
-          friendly: "orientation",
+          friendly: "Orientation",
+        },
+        compass: {
+          index: 6,
+          type: "string",
+          friendly: "Compass",
         },
       },
       rows: rows,
@@ -67,6 +72,7 @@ $.get( "/api/devices", function( data ) {
         speed: pos.speed,
         course: pos.orient,
         heading: pos.orient,
+        compass: data.compass,
       });
       console.log(pos);
       trackMarker.addTo(mymap);
@@ -82,6 +88,7 @@ $.get( "/api/devices", function( data ) {
             speed: data.speed,
             course: data.orientation,
             heading: data.orientation,
+            compass: data.compass,
           });
           trackMarker.addTo(mymap);
         });
