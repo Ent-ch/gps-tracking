@@ -38,7 +38,7 @@ $(document).ready(function () {
         speed: el.speed,
         compass: el.compass,
       });
-
+      return dat;
     });
 
     $('#devices-table').WATable({
@@ -79,8 +79,8 @@ $(document).ready(function () {
         },
         rows: rows,
       },
-      // checkboxes: true,
-      // checkAllToggle: false,
+      checkboxes: false,
+      checkAllToggle: false,
       rowClicked: function (data) {
         let pos = data.row.pos,
           trackMarker = L.trackSymbol(L.latLng(pos.lat, pos.lon), {
@@ -91,7 +91,7 @@ $(document).ready(function () {
             speed: pos.speed,
             course: pos.orient,
             heading: pos.orient,
-            // compass: data.compass,
+            compass: data.compass,
           });
         console.log(pos);
         trackMarker.addTo(mymap);
