@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-var db = require('./config/db');
+var db = require('./server/config/db');
 var fs = require('fs');
 
 var colors  = require('colors')
@@ -11,7 +11,7 @@ traceur.require.makeDefault(function (filePath) {
   return !~filePath.indexOf('node_modules');
 });
 
-fs.readdirSync('./controllers').forEach(function (file) {
-  var outMod = require('./controllers/' + file);
+fs.readdirSync('./server/controllers').forEach(function (file) {
+  var outMod = require('./server/controllers/' + file);
   console.log('Load controllers from - ' + file);
 });
