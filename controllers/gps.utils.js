@@ -1,4 +1,4 @@
-export function bearing(lat1, lng1, lat2, lng2) {
+function bearing(lat1, lng1, lat2, lng2) {
 
     let dLon = toRad(lng2 - lng1);
 
@@ -21,7 +21,7 @@ function toDeg(rad) {
     return rad * 180 / Math.PI;
 }
 
-export function calculateSpeed(t1, lat1, lng1, t2, lat2, lng2) {
+function calculateSpeed(t1, lat1, lng1, t2, lat2, lng2) {
     if (typeof(Number.prototype.toRad) === "undefined") {
         Number.prototype.toRad = function () {
             return this * Math.PI / 180;
@@ -29,9 +29,10 @@ export function calculateSpeed(t1, lat1, lng1, t2, lat2, lng2) {
     }
     const R = 6371; // km
     let dLat = (lat2 - lat1).toRad(),
-        dLon = (lon2 - lon1).toRad(),
-        lat1 = lat1.toRad(),
-        lat2 = lat2.toRad();
+        dLon = (lon2 - lon1).toRad();
+
+    lat1 = lat1.toRad();
+    lat2 = lat2.toRad();
 
     let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) 
         * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2),
@@ -41,7 +42,7 @@ export function calculateSpeed(t1, lat1, lng1, t2, lat2, lng2) {
     return distance / t2 - t1;
 }
 
-export function compass(deg) {
+function compass(deg) {
     switch (deg) {
         case 45 > deg && deg >= 315 :
             return 'N'
@@ -55,3 +56,5 @@ export function compass(deg) {
            return false;
     }
 }
+
+export default {calculateSpeed, bearing, compass};
